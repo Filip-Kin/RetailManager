@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_retailmanager" default="compile.module.retailmanager">
+  <dirname property="module.retailmanager.basedir" file="${ant.file.module_retailmanager}"/>
+  
+  <property name="module.jdk.home.retailmanager" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.retailmanager" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.retailmanager" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.retailmanager" value="-encoding UTF-8 -source 9 -target 9 ${compiler.args}"/>
+  
+  <property name="retailmanager.output.dir" value="${module.retailmanager.basedir}/out/production/RetailManager"/>
+  <property name="retailmanager.testoutput.dir" value="${module.retailmanager.basedir}/out/test/RetailManager"/>
+  
+  <path id="retailmanager.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="retailmanager.module.production.classpath">
+    <path refid="${module.jdk.classpath.retailmanager}"/>
+  </path>
+  
+  <path id="retailmanager.runtime.production.module.classpath">
+    <pathelement location="${retailmanager.output.dir}"/>
+  </path>
+  
+  <path id="retailmanager.module.classpath">
+    <path refid="${module.jdk.classpath.retailmanager}"/>
+    <pathelement location="${retailmanager.output.dir}"/>
+  </path>
+  
+  <path id="retailmanager.runtime.module.classpath">
+    <pathelement location="${retailmanager.testoutput.dir}"/>
+    <pathelement location="${retailmanager.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.retailmanager">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.retailmanager">
+    <patternset refid="excluded.from.module.retailmanager"/>
+  </patternset>
+  
+  <path id="retailmanager.module.sourcepath">
+    <dirset dir="${module.retailmanager.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.retailmanager" depends="compile.module.retailmanager.production,compile.module.retailmanager.tests" description="Compile module RetailManager"/>
+  
+  <target name="compile.module.retailmanager.production" depends="register.custom.compilers" description="Compile module RetailManager; production classes">
+    <mkdir dir="${retailmanager.output.dir}"/>
+    <javac2 destdir="${retailmanager.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.retailmanager}/javac">
+      <compilerarg line="${compiler.args.retailmanager}"/>
+      <bootclasspath refid="retailmanager.module.bootclasspath"/>
+      <classpath refid="retailmanager.module.production.classpath"/>
+      <src refid="retailmanager.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.retailmanager"/>
+    </javac2>
+    
+    <copy todir="${retailmanager.output.dir}">
+      <fileset dir="${module.retailmanager.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.retailmanager.tests" depends="register.custom.compilers,compile.module.retailmanager.production" description="compile module RetailManager; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.retailmanager" description="cleanup module">
+    <delete dir="${retailmanager.output.dir}"/>
+    <delete dir="${retailmanager.testoutput.dir}"/>
+  </target>
+</project>
